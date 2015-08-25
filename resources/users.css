@@ -58,10 +58,16 @@ Flex layout
 	flex-grow: 1;
 }
 
-@media (max-width: 700) {
-	* {
-		display: none;
-	}
+@media only screen and (min-width : 320px) and (max-width : 720px) {
+	.container {
+    flex-direction: column;
+  }
+  .nameIcon {
+  	order: 1;
+  }
+  .followers {
+  	order: 2;
+  }
 }
 
 /***********
@@ -71,3 +77,8 @@ Flex layout
 *
 ************/
 
+#followButton {
+	border-radius: 5px;
+	border-style: 2px black;
+	border: dashed;
+}
