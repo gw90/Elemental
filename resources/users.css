@@ -1,15 +1,73 @@
+@import url(http://fonts.googleapis.com/css?family=Raleway:400,700,900,300);
+
+/* Random stuff that doesn't go anywhere else :p*/
+
+* {
+	font-family: Raleway, sans-serif;
+	text-align: center;
+	border: none;
+	border-style: 1px black;
+}
+
+.centered {
+	text-align: center;
+}
+
+.number {
+	font-size: 3em;
+}
+
+/*
+
+Flex layout
+
+*/
 #main {
-	background-color: #aaa;
+	/*the wrapper for everything!*/
 	margin: 10px;
 	padding: 25px;
+	text-align: center;
+}
+
+.container {
+	display: flex;
 }
 
 .content {
+	margin: 10px;
 	padding: 10px;
-	margin-bottom: 10px;
-	
 }
 
-#header {
-	background-color: #bbb;
+.nameIcon {
+	flex-grow: 5;
 }
+.followers {
+	flex-grow: 1;
+}
+
+#followButton {
+	width: auto;
+	display: inline-block;
+	padding-top: -10px;
+	padding-bottom: -10px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.reputation {
+	flex-grow: 1;
+}
+
+@media (max-width: 700) {
+	* {
+		display: none;
+	}
+}
+
+/***********
+* 
+*
+*  Following section in more detail
+*
+************/
+
