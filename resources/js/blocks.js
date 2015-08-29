@@ -2,6 +2,9 @@ var selected = null, // Object of the element to be moved
     x_pos = 0, y_pos = 0, // Stores x & y coordinates of the mouse pointer
     x_elem = 0, y_elem = 0; // Stores top, left values (edge) of the element
 
+var elemental = {};
+
+// Tells if an dom element is the parent of another
 function isDescendant(parent, child) {
      var node = child.parentNode;
      while (node != null) {
@@ -13,7 +16,9 @@ function isDescendant(parent, child) {
      return false;
 }
 
-function closestElem(elem, offset, initial) { //elem is nodelist, offset is own offset
+// as far as I can tell, finds the closest element to another element.
+// How? No clue.
+blockDragging.closestElem = function(elem, offset, initial) { //elem is nodelist, offset is own offset
     var el = null,
         elOffset,
         x = offset.x, //x is my own offset
@@ -23,7 +28,7 @@ function closestElem(elem, offset, initial) { //elem is nodelist, offset is own 
         minDistance;
     elem.each( function(item) {
         if(item == selected) {return false;} // I added this -NN
-        elOffset = getOffset(item); //returns object with offsets
+        elOffset = blockDragging.getOffset(item); //returns object with offsets
         
         //let's only test the bottom-left corner
         dx = elOffset.left - x; 
@@ -37,7 +42,7 @@ function closestElem(elem, offset, initial) { //elem is nodelist, offset is own 
     return el;
 }
 
-function getOffset( elem ) {
+blockDragging.getOffset = function( elem ) {
     var offsetLeft = (function(elem) {
         var offsetLeft = 0;
         do {
@@ -88,15 +93,16 @@ function parentHasClass(element, className) {
 
 // Will be called when user starts dragging an element
 function _drag_init(elem, ev) {
-    var relativeX = ev.pageX - getOffset(elem).left;
-    var relativeY = ev.pageY - getOffset(elem).top;
+    console.log(elem, ev);
+    var relativeX = ev.pageX - blockDragging.getOffset(elem).left;
+    var relativeY = ev.pageY - blockDragging.getOffset(elem).top;
     // Store the object of the element which needs to be moved
     var wrapper = document.createElement("ul");
     wrapper.classList.add('draggy');
     SCRIPTING_AREA.insertBefore(wrapper, SCRIPTING_AREA.firstChild);
     selected = elem;
-    var curX = ev.pageX - getOffset(SCRIPTING_AREA).left,
-        curY = ev.pageY - getOffset(SCRIPTING_AREA).top;
+    var curX = ev.pageX - blockDragging.getOffset(SCRIPTING_AREA).left,
+        curY = ev.pageY - blockDragging.getOffset(SCRIPTING_AREA).top;
     var childs = Array.prototype.slice.call(elem.parentElement.children);
     for(var i = childs.indexOf(elem); i < childs.length; i++) {
         childs[i].removeAttribute('style');
@@ -109,9 +115,9 @@ function _drag_init(elem, ev) {
     y_elem = y_pos - selected.offsetTop;
 }
 
-function _palette_drag_init(elem, ev) {
-    var relativeX = ev.clientY - getOffset(elem).left - SCRIPTING_AREA.scrollLeft;
-    var relativeY = ev.clientY - getOffset(elem).top + BLOCK_PALETTE.scrollTop - SCRIPTING_AREA.scrollTop;
+blockDragging.paletteDragInit = function(elem, ev) {
+    var relativeX = ev.clientY - blockDragging.getOffset(elem).left - SCRIPTING_AREA.scrollLeft;
+    var relativeY = ev.clientY - blockDragging.getOffset(elem).top + BLOCK_PALETTE.scrollTop - SCRIPTING_AREA.scrollTop;
     // Clone element
     var newElem = elem.cloneNode(true);
     newElem.classList.remove('paletteBlock');
@@ -120,8 +126,8 @@ function _palette_drag_init(elem, ev) {
     wrapper.classList.add('draggy');
     SCRIPTING_AREA.insertBefore(wrapper, SCRIPTING_AREA.firstChild);
     selected = newElem;
-    var curX = ev.clientY - getOffset(SCRIPTING_AREA).left,
-        curY = ev.clientY - getOffset(SCRIPTING_AREA).top;
+    var curX = ev.clientY - blockDragging.getOffset(SCRIPTING_AREA).left,
+        curY = ev.clientY - blockDragging.getOffset(SCRIPTING_AREA).top;
     wrapper.appendChild(newElem);
     wrapper.style.left = curX - relativeX + 'px';
     wrapper.style.top = curY - relativeY + 'px';
@@ -140,11 +146,11 @@ function _move_elem(e) {
                 item.classList.remove('drop-area');
             }
         });
-        var el = closestElem(
+        var el = blockDragging.closestElem(
             $(SNAP_CLASSES),
             {
-                y: getOffset(selected).top,
-                x: getOffset(selected).left
+                y: blockDragging.getOffset(selected).top,
+                x: blockDragging.getOffset(selected).left
             },
             selected
         )
@@ -165,11 +171,11 @@ function _destroy(ev) {
     });
     var topEl = null;
     if (selected !== null) {
-        topEl = closestElem(
+        topEl = blockDragging.closestElem(
             $(SNAP_CLASSES),
             {
-                y: getOffset(selected).top,
-                x: getOffset(selected).left
+                y: blockDragging.getOffset(selected).top,
+                x: blockDragging.getOffset(selected).left
             },
             selected
         );
@@ -192,10 +198,10 @@ function _destroy(ev) {
         selected.parentNode.removeChild(selected);
     } else {
         if (selected !== null) {
-            if (getOffset(selected).top - getOffset(SCRIPTING_AREA).top < 0) {
+            if (blockDragging.getOffset(selected).top - blockDragging.getOffset(SCRIPTING_AREA).top < 0) {
                 selected.style.top = 0;
             }
-            if (getOffset(selected).left - getOffset(SCRIPTING_AREA).left < 0) {
+            if (blockDragging.getOffset(selected).left - blockDragging.getOffset(SCRIPTING_AREA).left < 0) {
                 selected.style.left = 0;
             }
         }
@@ -258,11 +264,11 @@ BLOCK_PALETTE.addEventListener('mousedown', function(ev) {
         return;
     }
     if (ev.target.matches(DRAGGABLE_PALETTE_ELEMENTS)) {
-        _palette_drag_init(ev.target, ev);
+        blockDragging.paletteDragInit(ev.target, ev);
         ev.stopPropagation();
         setZebra();
     } else if (ev.target.matches(C_PALETTE_ELEMENTS)) {
-        _palette_drag_init(ev.target.parentElement, ev);
+        blockDragging.paletteDragInit(ev.target.parentElement, ev);
         ev.stopPropagation();
         setZebra();
     }
@@ -340,10 +346,10 @@ $('.context-menu.scripts .menu-item').on('click', function(ev) {
                     wrapper.appendChild(child);
                 }
 
-                var relativeX = ev.pageX - getOffset(target).left;
-                var relativeY = ev.pageY - getOffset(target).top;
-                var curX = ev.pageX - getOffset(SCRIPTING_AREA).left,
-                    curY = ev.pageY - getOffset(SCRIPTING_AREA).top;
+                var relativeX = ev.pageX - blockDragging.getOffset(target).left;
+                var relativeY = ev.pageY - blockDragging.getOffset(target).top;
+                var curX = ev.pageX - blockDragging.getOffset(SCRIPTING_AREA).left,
+                    curY = ev.pageY - blockDragging.getOffset(SCRIPTING_AREA).top;
                 wrapper.style.left = curX - relativeX + 25 + 'px';
                 wrapper.style.top = curY - relativeY + 25 + 'px';
                 SCRIPTING_AREA.insertBefore(wrapper, SCRIPTING_AREA.firstChild);
@@ -362,6 +368,7 @@ $('.context-menu.scripts .menu-item').on('click', function(ev) {
 
 setZebra();
 
+// Makes trash can open and close
 $('.trashCan').on('mouseover', function(ev) {
     this.classList.add('hovering');
 });
