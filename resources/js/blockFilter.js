@@ -94,7 +94,14 @@ var filter = {
       tags: ['image', 'img', 'picture'],
       palette: 1
     },
-
+    
+    /* Blocks for palette 3 - Other stuff */ 
+    {
+      name: 'img',
+      htmlString: "<li class='stack e-img'>image with source <span contenteditable='true' class='script-input src'>http://scratch.mit.edu</span> and class(es) <span contenteditable='true' class='script-input class'></span></li>",
+      tags: ['src', 'img', 'picture'],
+      palette: 1
+    },
   ]
 };
 
