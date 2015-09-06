@@ -98,7 +98,7 @@ var filter = {
     /* Blocks for palette 3 - Other stuff */ 
     {
       name: 'img',
-      htmlString: "<li class='stack e-img'>image with source <span contenteditable='true' class='script-input src'>http://scratch.mit.edu</span> and class(es) <span contenteditable='true' class='script-input class'></span></li>",
+      htmlString: "<li class='stack e-iframe'>iframe with source <span contenteditable='true' class='script-input src'>http://scratch.mit.edu</span> and class(es) <span contenteditable='true' class='script-input class'></span></li>",
       tags: ['src', 'img', 'picture'],
       palette: 2
     },
