@@ -95,12 +95,11 @@ var filter = {
       palette: 1
     },
     
-    /* Blocks for palette 3 - Other stuff */ 
     {
       name: 'iframe',
       htmlString: "<li class='stack e-iframe'>iframe with source <span contenteditable='true' class='script-input src'>http://scratch.mit.edu</span></li>",
-      tags: ['frame'],
-      palette: 2
+      tags: ['frame', 'frame'],
+      palette: 1
     },
   ]
 };
