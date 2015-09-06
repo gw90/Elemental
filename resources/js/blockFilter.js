@@ -4,7 +4,8 @@ var filter = {
   searchString: "im",
   paletteNames: [
     "text",
-    "media"
+    "media",
+    "Other stuff"
   ],
   getFilteredBlocks: function(){
     var matching = [];
