@@ -81,7 +81,7 @@ var filter = {
     },
     {
       name: 'text',
-      htmlString: "<li class='stack e-text'><span contenteditable='true' class='script-input text'>breadfish.gif</span></li>",
+      htmlString: "<li class='stack e-text'>paragraph <span contenteditable='true' class='script-input text'>breadfish.gif</span></li>",
       tags: ['text'],
       palette: 0
     },
